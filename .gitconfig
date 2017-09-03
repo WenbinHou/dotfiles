@@ -8,3 +8,5 @@
 	email = catchyrime@fastmail.com
 [credential]
 	helper = store
+[push]
+	default = simple
