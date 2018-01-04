@@ -1,16 +1,22 @@
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
 [user]
-	name = Wenbin Hou
-	email = catchyrime@fastmail.com
+    name = Wenbin Hou
+    email = catchyrime@fastmail.com
 [credential]
-	helper = store
+    helper = store
 [push]
-	default = simple
+    default = simple
 [core]
-	editor = vim
+    pager=less
+    editor = vim
+    preloadindex = true
+    fscache = true
+    ignorecase = false
 [alias]
     tree = log --graph --decorate --pretty=oneline --abbrev-commit --all
+[gc]
+    auto = 256
