@@ -56,12 +56,20 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+my_netns="$(ip netns identify "$BASHPID")"
+if [ -n "$my_netns" ]; then
+    my_netns="|$my_netns"
+fi
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;33m\]\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1_PREF='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u\[\033[00m\]@\[\033[01;33m\]\h\[\033[00m\]'
+    PS1_SUFF=':\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1="${PS1_PREF}${my_netns}${PS1_SUFF}"
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h${my_netns}:\w\$ '
 fi
 unset color_prompt force_color_prompt
+unset my_netns
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
