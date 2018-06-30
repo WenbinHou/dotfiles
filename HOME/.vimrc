@@ -17,3 +17,6 @@ set nobackup       " no backup files
 set nowritebackup  " only in case you don't want a backup file while editing
 set noswapfile     " no swap files
 
+" *.rc
+au BufRead,BufNewFile *.rc set filetype=sh
+
