@@ -130,9 +130,11 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-my_netns="$(ip netns identify "$BASHPID")"
-if [ -n "$my_netns" ]; then
-    my_netns="|$my_netns"
+if hash ip >&/dev/null; then
+    my_netns="$(ip netns identify "$BASHPID")"
+    if [ -n "$my_netns" ]; then
+        my_netns="|$my_netns"
+    fi
 fi
 
 if [ "$color_prompt" = yes ]; then
