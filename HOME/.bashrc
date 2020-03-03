@@ -5,6 +5,77 @@
 # Disable dotnet collect information
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
+#
+# Prepend to PATH-like environment variables
+#
+function prepend_distinct() {
+    # prepend_distinct <env_name> <values...>
+    local env_name="$1"
+    shift
+    if [ -z "$env_name" ]; then
+        echo "prepend_distinct env_name not given or empty"
+        return 1
+    fi
+
+    local env_value="${!env_name}"
+
+    for ((i=$#;i>0;i--)); do
+        local value="${!i}"
+        IFS=':' builtin read -r -a old_values <<< "$env_value"
+        local found="no"
+        for old_value in "${old_values[@]}"; do
+            if [ "$old_value" = "$value" ]; then
+                found="yes"
+                break
+            fi
+        done
+        if [ "$found" = "no" ]; then
+            if [ -z "$env_value" ]; then
+                env_value="$value"
+            else
+                env_value="$value:$env_value"
+            fi
+        fi
+    done
+
+    export "${env_name}=${env_value}"
+}
+
+function prepend_bin() {
+    # prepend_bin <dirs...>
+    prepend_distinct PATH "$@"
+}
+
+function prepend_lib() {
+    # prepend_lib <dirs...>
+    prepend_distinct LIBRARY_PATH "$@"
+    prepend_distinct LD_LIBRARY_PATH "$@"
+}
+
+function prepend_inc() {
+    # prepend_inc <dirs...>
+    prepend_distinct CPATH "$@"
+    prepend_distinct C_INCLUDE_PATH "$@"
+    prepend_distinct CPLUS_INCLUDE_PATH "$@"
+}
+
+function prepend_install_root() {
+    # prepend_install_root <dirs...>
+    for dir in "$@"; do
+        prepend_bin "${dir}/bin"
+        prepend_lib "${dir}/lib64" "${dir}/lib"
+        prepend_inc "${dir}/include"
+    done
+}
+
+
+#
+# Example:
+#   prepend_install_root /opt/install /opt/more/install
+#
+
+
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
